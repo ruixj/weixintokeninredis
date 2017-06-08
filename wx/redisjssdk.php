@@ -8,7 +8,7 @@ class JSSDK {
   static function logmessage($msg)
   {
 	$file = XRUI_PLUGIN_DIR.'log.txt';
-	file_put_contents($file, $msg.PHP_EOL,FILE_APPEND);
+	file_put_contents($file, date("Y-m-d H:i:s",time()).' '.$msg.PHP_EOL,FILE_APPEND);
   }
 
   public function __construct($appId, $appSecret) {
