@@ -140,14 +140,14 @@ class JSSDK {
     }
     else
     {
-       $redisLock = new RedisLock($redis,"accesstokenlock");
+        $redisLock = new RedisLock($redis,"accesstokenlock");
         $IsLocked = $redisLock->acquirelock();
         while (!$IsLocked)
             $IsLocked = $redisLock->acquirelock();
         if($IsLocked)
         {
             $access_token = $redis->get($this->accesstokenkey);
-            if( !$data)
+            if( !$access_token  || ($forceNew &&($data && ($data == $accesstoken) )))
             {
                 JSSDK::logmessage("Getting new acccess token");
                 $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
@@ -160,11 +160,13 @@ class JSSDK {
                     $ret = $redis->setEx($this->accesstokenkey,$expire_in,$access_token);
                     if(!$ret)
                     {
+                        $access_token = '';
                         JSSDK::logmessage('failed to store access_token to redis');
                     }
                 }
                 else
                 {
+                    $access_token = '';
                     JSSDK::logmessage('failed to get access_token from weixin');
                 }
             }
@@ -215,4 +217,5 @@ class JSSDK {
     fclose($fp);
   }
 }
+
 
