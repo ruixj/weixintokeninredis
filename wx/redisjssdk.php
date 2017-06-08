@@ -147,9 +147,10 @@ class JSSDK {
         if($IsLocked)
         {
             $access_token = $redis->get($this->accesstokenkey);
-            if( !$access_token  || ($forceNew &&($data && ($data == $accesstoken) )))
+            if( !$access_token  || ($forceNew && ($data && ($data == $access_token) )))
             {
-                JSSDK::logmessage("Getting new acccess token");
+                JSSDK::logmessage("Getting new acccess token: with forcenew".($forceNew?"True":"False"));
+
                 $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
                 $res = json_decode($this->httpGet($url));
                 $access_token = $res->access_token;
